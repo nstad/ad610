@@ -50,13 +50,15 @@
         Script NewForest             
         {    
             TestScript = { Test-Path C:\NTDS\ADFinish.txt } 
-            GetScript =  { @{Result = $true} }           
+            #GetScript =  { @{Result = $true} }           
             SetScript = {
                         Install-ADDSForest -DomainName saplab.local -DomainNetBiosName saplab -DomainMode WinThreshold -ForestMode WinThreshold -SkipPreChecks -InstallDns:$true -SafeModeAdministratorPassword (ConvertTo-SecureString -AsPlainText "Pa55w.rd1234" -Force)
                         New-Item C:\NTDS\ADFinish.txt
                         Sleep 10
-                        Restart-Computer -Force
+                        #Restart-Computer -Force
+                        $global:DSCMachineStatus = 1
                         }
+            GetScript = { return @{result = 'result'}}
             DependsOn = "[WindowsFeature]ADDSInstall","[File]ADFiles","[WindowsFeature]ADDSTools"            
         }    
         
@@ -104,7 +106,7 @@
         Script ADJoin             
         {    
             TestScript = { Test-Path C:\NTDS\ADjoinFinish.txt } 
-            GetScript =  { @{Result = $true} }           
+            #GetScript =  { @{Result = $true} }           
             SetScript = {
                         $password = ConvertTo-SecureString "AD661!Pa55w.rd" -AsPlainText -Force
                         $cred= New-Object System.Management.Automation.PSCredential ("local-adm", $password )
@@ -116,7 +118,9 @@
                         Restart-Computer -Force
                         exit
                         New-Item C:\NTDS\ADjoinFinish.txt
+                        $global:DSCMachineStatus = 1
                         }
+            GetScript = { return @{result = 'result'}}            
             DependsOn = "[Script]CreateDNSZone"            
         }    
             
