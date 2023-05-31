@@ -106,7 +106,7 @@
         Script ADJoin             
         {    
             TestScript = { Test-Path C:\NTDS\ADjoinFinish.txt } 
-            #GetScript =  { @{Result = $true} }           
+            GetScript =  { @{Result = $true} }           
             SetScript = {
                         $password = ConvertTo-SecureString "AD661!Pa55w.rd" -AsPlainText -Force
                         $cred= New-Object System.Management.Automation.PSCredential ("local-adm", $password )
@@ -118,10 +118,9 @@
                         Restart-Computer -Force
                         exit
                         New-Item C:\NTDS\ADjoinFinish.txt
-                        $global:DSCMachineStatus = 1
-                        }
-            GetScript = { return @{result = 'result'}}            
-            DependsOn = "[Script]CreateDNSZone"            
+                        Restart-Computer 10.0.0.4 -Credential $cred
+                        }          
+            DependsOn = "[Script]NewForest"            
         }    
             
             
