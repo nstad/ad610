@@ -7,8 +7,8 @@
         LocalConfigurationManager            
         {            
             ActionAfterReboot = 'ContinueConfiguration'            
-            ConfigurationMode = 'ApplyOnly'            
-            RebootNodeIfNeeded = $true            
+            ConfigurationMode = 'ApplyAndAutoCorrect'            
+            RebootNodeIfNeeded = $true        
         }            
             
         File ADFiles            
@@ -102,27 +102,8 @@
                     }
         DependsOn = "[Script]CreateDNSZone"
         }
-
-        Script ADJoin             
-        {    
-            TestScript = { Test-Path C:\NTDS\ADjoinFinish.txt } 
-            GetScript =  { @{Result = $true} }           
-            SetScript = {
-                        $password = ConvertTo-SecureString "AD661!Pa55w.rd" -AsPlainText -Force
-                        $cred= New-Object System.Management.Automation.PSCredential ("local-adm", $password )
-                        Enter-PSSession 10.0.1.4 -Credential $cred 
-                        $passwordAD = ConvertTo-SecureString "AD661!Pa55w.rd" -AsPlainText -Force
-                        $adcred = New-Object System.Management.Automation.PSCredential ("saplab\ad-adm", $passwordAD )
-                        Add-Computer -DomainName saplab.local -Credential $adcred
-                        Sleep 10
-                        exit
-                        Restart-Computer 10.0.0.4 -Credential $cred
-                        New-Item C:\NTDS\ADjoinFinish.txt
-                        }          
-            DependsOn = "[Script]NewForest"            
-        }    
-            
-            
+              
+           
     }             
 }            
                     
