@@ -115,10 +115,9 @@
                         $adcred = New-Object System.Management.Automation.PSCredential ("saplab\ad-adm", $passwordAD )
                         Add-Computer -DomainName saplab.local -Credential $adcred
                         Sleep 10
-                        Restart-Computer -Force
                         exit
-                        New-Item C:\NTDS\ADjoinFinish.txt
                         Restart-Computer 10.0.0.4 -Credential $cred
+                        New-Item C:\NTDS\ADjoinFinish.txt
                         }          
             DependsOn = "[Script]NewForest"            
         }    
